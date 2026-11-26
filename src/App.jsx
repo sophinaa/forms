@@ -54,26 +54,81 @@ function downloadICS(session, name) {
 
 /* ---------- small pieces ---------- */
 
-function Beads({ value, onChange, label }) {
+// A slider whose handle is a little prayer mat. 0 = not chosen yet.
+function MatSlider({ value, onChange, label }) {
+  const track = useRef(null)
+  const dragging = useRef(false)
+  const pos = value ? (value - 1) / (LEVELS.length - 1) : 0
+
+  const fromPointer = (e) => {
+    const r = track.current.getBoundingClientRect()
+    const ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width))
+    onChange(Math.round(ratio * (LEVELS.length - 1)) + 1)
+  }
+  const onKey = (e) => {
+    const v = value || 1
+    const keys = { ArrowRight: v + 1, ArrowUp: v + 1, ArrowLeft: v - 1, ArrowDown: v - 1, Home: 1, End: LEVELS.length }
+    if (e.key in keys) {
+      e.preventDefault()
+      onChange(Math.min(LEVELS.length, Math.max(1, value ? keys[e.key] : 1)))
+    }
+  }
+
   return (
-    <div className="beads" role="radiogroup" aria-label={label}>
-      <div className="beads__label">{label}</div>
-      <div className="beads__row">
-        <span className="beads__string" />
+    <div className={`mslider ${value ? '' : 'mslider--unset'}`}>
+      <div className="mslider__label" id={`${label}-label`}>
+        {label}
+      </div>
+      <div
+        ref={track}
+        className="mslider__track"
+        role="slider"
+        tabIndex={0}
+        aria-labelledby={`${label}-label`}
+        aria-valuemin={1}
+        aria-valuemax={LEVELS.length}
+        aria-valuenow={value || undefined}
+        aria-valuetext={value ? LEVELS[value - 1] : 'Not chosen'}
+        onKeyDown={onKey}
+        onPointerDown={(e) => {
+          dragging.current = true
+          e.currentTarget.setPointerCapture(e.pointerId)
+          fromPointer(e)
+        }}
+        onPointerMove={(e) => dragging.current && fromPointer(e)}
+        onPointerUp={() => (dragging.current = false)}
+        onPointerCancel={() => (dragging.current = false)}
+      >
+        <span className="mslider__rail" />
+        <span className="mslider__fill" style={{ width: `${pos * 100}%` }} />
         {LEVELS.map((lvl, i) => (
-          <button
+          <span
             key={lvl}
-            type="button"
-            role="radio"
-            aria-checked={value === i + 1}
-            aria-label={lvl}
-            className={`bead ${value >= i + 1 ? 'bead--on' : ''}`}
-            style={{ '--i': i }}
-            onClick={() => onChange(i + 1)}
+            className={`mslider__tick ${value > i ? 'mslider__tick--on' : ''}`}
+            style={{ left: `${(i / (LEVELS.length - 1)) * 100}%` }}
           />
         ))}
+        <span className="mslider__thumb" style={{ left: `${pos * 100}%` }}>
+          <svg viewBox="0 0 40 56" aria-hidden="true">
+            <g stroke="#233f26" strokeWidth="1.2">
+              {[6, 10, 14, 18, 22, 26, 30, 34].map((x) => (
+                <g key={x}>
+                  <line x1={x} y1="4" x2={x} y2="0.5" />
+                  <line x1={x} y1="52" x2={x} y2="55.5" />
+                </g>
+              ))}
+            </g>
+            <rect x="3" y="4" width="34" height="48" rx="1.5" fill="#233f26" />
+            <rect x="6" y="7" width="28" height="42" fill="none" stroke="#ece6cb" strokeWidth="1.2" strokeDasharray="2 1.5" />
+            <path d="M12,46 L12,22 C12,17 16,16 18,14 Q20,12 20,10 Q20,12 22,14 C24,16 28,17 28,22 L28,46 Z" fill="#c9921f" stroke="#ece6cb" strokeWidth="1.2" />
+          </svg>
+        </span>
       </div>
-      <div className="beads__caption">{value ? LEVELS[value - 1] : 'Tap a bead'}</div>
+      <div className="mslider__ends">
+        <span>{LEVELS[0]}</span>
+        <span>{LEVELS[LEVELS.length - 1]}</span>
+      </div>
+      <div className="mslider__caption">{value ? LEVELS[value - 1] : 'Slide the mat'}</div>
     </div>
   )
 }
@@ -274,8 +329,8 @@ export default function App() {
             <p className="step-num">03</p>
             <h2 className="q">How confident do you feel right now?</h2>
             <p className="sub">No judgement. This just helps us pitch the session right.</p>
-            <Beads label="Wudu" value={form.wudu} onChange={(v) => set('wudu', v)} />
-            <Beads label="Salah" value={form.salah} onChange={(v) => set('salah', v)} />
+            <MatSlider label="Wudu" value={form.wudu} onChange={(v) => set('wudu', v)} />
+            <MatSlider label="Salah" value={form.salah} onChange={(v) => set('salah', v)} />
           </>
         )
 

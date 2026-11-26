@@ -208,41 +208,71 @@ hr {
 .session--on { background: var(--green); color: var(--cream); }
 .session--on .session__check { opacity: 1; transform: none; }
 
-/* tasbih beads */
-.beads { margin-bottom: 26px; }
-.beads__label {
+/* prayer-mat slider */
+.mslider { margin-bottom: 30px; max-width: 520px; }
+.mslider__label {
   font-family: var(--cond);
   font-weight: 700;
   text-transform: uppercase;
   font-size: 22px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
-.beads__row { position: relative; display: flex; gap: clamp(14px, 3vw, 26px); align-items: center; padding: 6px 0; }
-.beads__string {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 2px;
-  background: var(--rule);
-}
-.bead {
+.mslider__track {
   position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid var(--green);
-  background: var(--paper-2);
+  height: 64px;
+  margin: 0 20px;
   cursor: pointer;
-  transition: transform 0.25s, background 0.25s;
-  transition-delay: calc(var(--i) * 40ms);
+  touch-action: none;
+  outline: none;
+  user-select: none;
 }
-.bead:hover { transform: scale(1.12); }
-.bead--on {
-  background: radial-gradient(circle at 35% 30%, #4a7a4f, var(--green) 65%);
-  transform: scale(1.05);
+.mslider__rail, .mslider__fill {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  margin-top: -3px;
+  left: 0;
 }
-.beads__caption { margin-top: 8px; color: var(--gold); font-weight: 700; text-transform: uppercase; font-size: 15px; letter-spacing: 0.04em; }
+.mslider__rail { right: 0; background: rgba(35, 63, 38, 0.18); }
+.mslider__fill { background: var(--gold); transition: width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.mslider__tick {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid rgba(35, 63, 38, 0.35);
+  transition: 0.25s;
+}
+.mslider__tick--on { background: var(--gold); border-color: var(--gold); }
+.mslider__thumb {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 56px;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  transition: left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s;
+  filter: drop-shadow(0 4px 5px rgba(35, 63, 38, 0.3));
+}
+.mslider__thumb svg { width: 100%; height: 100%; display: block; }
+.mslider__track:active .mslider__thumb { transform: translate(-50%, -50%) rotate(0deg) scale(1.12); transition: transform 0.2s; }
+.mslider__track:focus-visible .mslider__thumb { outline: 2px solid var(--gold); outline-offset: 4px; }
+.mslider--unset .mslider__thumb { opacity: 0.55; animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge {
+  0%, 60%, 100% { margin-left: 0; }
+  30% { margin-left: 14px; }
+}
+.mslider__ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+.mslider__caption { margin-top: 6px; color: var(--gold); font-weight: 700; text-transform: uppercase; font-size: 15px; letter-spacing: 0.04em; }
 
 /* chips */
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -469,8 +499,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outl
   .session__label { font-size: 30px; }
   .session__time { font-size: 26px; }
 
-  .beads__row { justify-content: space-between; gap: 0; }
-  .bead { width: 44px; height: 44px; }
 
   .chip { font-size: 15px; padding: 12px 14px; }
 
@@ -491,7 +519,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outl
   .sessions { grid-template-columns: 1fr; }
   .welcome-row { grid-template-columns: 1fr 36%; }
   .meta { font-size: 19px; }
-  .bead { width: 38px; height: 38px; }
 }
 
 /* short landscape phones: don't waste height on the sticky header */
