@@ -22,13 +22,12 @@ For hot reload while changing the design, run `npm run dev` in one terminal and 
 
 Go to **`/organiser`** and sign in with `ORGANISER_PASSWORD`. You'll see:
 
-- totals: everyone, Sisters, Brothers, and who's happy to get a reminder
+- totals: everyone, Sisters and Brothers
 - wudu and salah confidence levels, and the most-requested topics, for the teacher
 - the **anonymous questions**, shown without names because the form promises that
 - a searchable attendee list, with an option to remove a sign-up
 - **Download CSV** (attendees) and **Questions CSV** (questions only, no names). Both open in Excel and Google Sheets.
 
-The site doesn't send emails. "Reminder OK" means the person agreed to be contacted, so organisers can message them from the CSV.
 
 ## Deploy on Render (free)
 

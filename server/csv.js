@@ -19,9 +19,9 @@ const toCsv = (rows) => '﻿' + rows.map((r) => r.map(cell).join(',')).join('\r\
 // reach the teacher without a name attached.
 export function registrationsCsv(list) {
   return toCsv([
-    ['Name', 'Session', 'Email', 'Phone', 'Reminder OK', 'Wudu confidence', 'Salah confidence', 'Focus topics', 'Registered'],
+    ['Name', 'Session', 'Email', 'Phone', 'Wudu confidence', 'Salah confidence', 'Focus topics', 'Registered'],
     ...list.map((r) => [
-      r.name, sessionLabel(r.session), r.email, r.phone, r.reminder ? 'Yes' : 'No',
+      r.name, sessionLabel(r.session), r.email, r.phone,
       `${r.wudu} – ${LEVELS[r.wudu - 1]}`, `${r.salah} – ${LEVELS[r.salah - 1]}`, r.topics.join('; '),
       stamp.format(new Date(r.createdAt)),
     ]),

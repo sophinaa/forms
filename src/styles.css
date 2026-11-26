@@ -290,33 +290,6 @@ hr {
 .chip:hover { background: rgba(35, 63, 38, 0.08); }
 .chip--on { background: var(--green); color: var(--cream); }
 
-/* toggle */
-.toggle { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 17px; cursor: pointer; margin-top: 6px; }
-.toggle input { position: absolute; opacity: 0; }
-.toggle__track {
-  width: 46px;
-  height: 26px;
-  border-radius: 999px;
-  background: rgba(35, 63, 38, 0.2);
-  position: relative;
-  transition: 0.25s;
-  flex: none;
-}
-.toggle__track::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--paper-2);
-  transition: 0.25s;
-}
-.toggle input:checked + .toggle__track { background: var(--green); }
-.toggle input:checked + .toggle__track::after { transform: translateX(20px); }
-.toggle input:focus-visible + .toggle__track { outline: 2px solid var(--gold); outline-offset: 2px; }
-
 /* review */
 .review { margin: 0 0 26px; }
 .review__row {

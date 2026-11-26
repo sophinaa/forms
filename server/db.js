@@ -17,7 +17,7 @@ const SCHEMA = [
     salah         INTEGER NOT NULL,
     topics        TEXT NOT NULL DEFAULT '[]',
     question      TEXT NOT NULL DEFAULT '',
-    reminder      INTEGER NOT NULL DEFAULT 0,
+    reminder      INTEGER NOT NULL DEFAULT 0, -- no longer asked; kept so existing databases still match
     created_at    TEXT NOT NULL
   )`,
   // The same person can't register twice, but one email can register a few family members.
@@ -39,7 +39,6 @@ const toRecord = (row) =>
     salah: Number(row.salah),
     topics: JSON.parse(row.topics || '[]'),
     question: row.question,
-    reminder: Boolean(row.reminder),
     createdAt: row.created_at,
   }
 
@@ -63,11 +62,11 @@ export async function openDatabase(url, { authToken } = {}) {
       try {
         await client.execute({
           sql: `INSERT INTO workshop_registrations
-                  (public_id, submission_id, name, email, phone, session, wudu, salah, topics, question, reminder, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (public_id, submission_id, name, email, phone, session, wudu, salah, topics, question, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             publicId, submissionId || null, v.name, v.email, v.phone, v.session, v.wudu, v.salah,
-            JSON.stringify(v.topics), v.question, v.reminder ? 1 : 0, new Date().toISOString(),
+            JSON.stringify(v.topics), v.question, new Date().toISOString(),
           ],
         })
       } catch (err) {

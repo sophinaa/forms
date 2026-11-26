@@ -12,7 +12,6 @@ const initial = {
   email: '',
   phone: '',
   question: '',
-  reminder: true,
 }
 
 // Each step: what it asks, and whether it's complete enough to move on.
@@ -387,11 +386,6 @@ export default function App() {
                 autoComplete="tel"
               />
             </Field>
-            <label className="toggle">
-              <input type="checkbox" checked={form.reminder} onChange={(e) => set('reminder', e.target.checked)} />
-              <span className="toggle__track" />
-              Happy for the organisers to send me a reminder the day before
-            </label>
           </>
         )
 

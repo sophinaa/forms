@@ -44,7 +44,7 @@ export function validateRegistration(body = {}) {
   if (question.length > 500) errors.question = 'Please keep your question under 500 characters.'
 
   return {
-    value: { name, email, phone, session, wudu, salah, topics, question, reminder: body.reminder === true },
+    value: { name, email, phone, session, wudu, salah, topics, question },
     errors,
   }
 }

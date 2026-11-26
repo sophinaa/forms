@@ -46,7 +46,6 @@ const bar = (n, max) => `<span class="bar"><span style="width:${max ? Math.round
 export function organiserPage(list) {
   const count = (fn) => list.filter(fn).length
   const bySession = SESSIONS.map((s) => ({ ...s, n: count((r) => r.session === s.id) }))
-  const reminders = count((r) => r.reminder)
 
   const levelRows = (key) =>
     LEVELS.map((lvl, i) => {
@@ -67,7 +66,6 @@ export function organiserPage(list) {
   <td data-label="Session"><span class="tag tag--${r.session}">${esc(sessionLabel(r.session))}</span></td>
   <td data-label="Email"><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></td>
   <td data-label="Phone">${r.phone ? `<a href="tel:${esc(r.phone.replace(/\s/g, ''))}">${esc(r.phone)}</a>` : '—'}</td>
-  <td data-label="Reminder">${r.reminder ? 'Yes' : 'No'}</td>
   <td data-label="Wudu / Salah">${r.wudu} / ${r.salah}</td>
   <td data-label="Focus">${esc(r.topics.join(', ')) || '—'}</td>
   <td data-label="Registered">${esc(new Date(r.createdAt).toLocaleString('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</td>
@@ -95,7 +93,6 @@ export function organiserPage(list) {
   <section class="stats">
     <div class="stat"><span class="stat__n">${list.length}</span><span class="stat__k">Registered</span></div>
     ${bySession.map((s) => `<div class="stat"><span class="stat__n">${s.n}</span><span class="stat__k">${esc(s.label)} · ${esc(s.time)}</span></div>`).join('')}
-    <div class="stat"><span class="stat__n">${reminders}</span><span class="stat__k">Want a reminder</span></div>
   </section>
 
   <section class="grid">
@@ -121,7 +118,7 @@ export function organiserPage(list) {
     </div>
     ${
       list.length
-        ? `<table class="table"><thead><tr><th>Name</th><th>Session</th><th>Email</th><th>Phone</th><th>Reminder</th><th>Wudu / Salah</th><th>Focus</th><th>Registered</th><th></th></tr></thead><tbody>${rows}</tbody></table>`
+        ? `<table class="table"><thead><tr><th>Name</th><th>Session</th><th>Email</th><th>Phone</th><th>Wudu / Salah</th><th>Focus</th><th>Registered</th><th></th></tr></thead><tbody>${rows}</tbody></table>`
         : '<p class="empty">No registrations yet. Share the link!</p>'
     }
   </section>
