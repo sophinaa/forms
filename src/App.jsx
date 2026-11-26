@@ -53,8 +53,8 @@ function downloadICS(session, name) {
 
 /* ---------- small pieces ---------- */
 
-// A slider whose handle is a little prayer mat. 0 = not chosen yet.
-function MatSlider({ value, onChange, label }) {
+// Confidence slider with a round green handle. 0 = not chosen yet.
+function ConfidenceSlider({ value, onChange, label }) {
   const track = useRef(null)
   const dragging = useRef(false)
   const pos = value ? (value - 1) / (LEVELS.length - 1) : 0
@@ -107,27 +107,13 @@ function MatSlider({ value, onChange, label }) {
             style={{ left: `${(i / (LEVELS.length - 1)) * 100}%` }}
           />
         ))}
-        <span className="mslider__thumb" style={{ left: `${pos * 100}%` }}>
-          <svg viewBox="0 0 40 56" aria-hidden="true">
-            <g stroke="#233f26" strokeWidth="1.2">
-              {[6, 10, 14, 18, 22, 26, 30, 34].map((x) => (
-                <g key={x}>
-                  <line x1={x} y1="4" x2={x} y2="0.5" />
-                  <line x1={x} y1="52" x2={x} y2="55.5" />
-                </g>
-              ))}
-            </g>
-            <rect x="3" y="4" width="34" height="48" rx="1.5" fill="#233f26" />
-            <rect x="6" y="7" width="28" height="42" fill="none" stroke="#ece6cb" strokeWidth="1.2" strokeDasharray="2 1.5" />
-            <path d="M12,46 L12,22 C12,17 16,16 18,14 Q20,12 20,10 Q20,12 22,14 C24,16 28,17 28,22 L28,46 Z" fill="#c9921f" stroke="#ece6cb" strokeWidth="1.2" />
-          </svg>
-        </span>
+        <span className="mslider__thumb" style={{ left: `${pos * 100}%` }} />
       </div>
       <div className="mslider__ends">
         <span>{LEVELS[0]}</span>
         <span>{LEVELS[LEVELS.length - 1]}</span>
       </div>
-      <div className="mslider__caption">{value ? LEVELS[value - 1] : 'Slide the mat'}</div>
+      <div className="mslider__caption">{value ? LEVELS[value - 1] : 'Slide to choose'}</div>
     </div>
   )
 }
@@ -328,8 +314,8 @@ export default function App() {
             <p className="step-num">03</p>
             <h2 className="q">How confident do you feel right now?</h2>
             <p className="sub">No judgement. This just helps us pitch the session right.</p>
-            <MatSlider label="Wudu" value={form.wudu} onChange={(v) => set('wudu', v)} />
-            <MatSlider label="Salah" value={form.salah} onChange={(v) => set('salah', v)} />
+            <ConfidenceSlider label="Wudu" value={form.wudu} onChange={(v) => set('wudu', v)} />
+            <ConfidenceSlider label="Salah" value={form.salah} onChange={(v) => set('salah', v)} />
           </>
         )
 

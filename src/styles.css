@@ -208,7 +208,7 @@ hr {
 .session--on { background: var(--green); color: var(--cream); }
 .session--on .session__check { opacity: 1; transform: none; }
 
-/* prayer-mat slider */
+/* confidence slider */
 .mslider { margin-bottom: 30px; max-width: 520px; }
 .mslider__label {
   font-family: var(--cond);
@@ -219,8 +219,8 @@ hr {
 }
 .mslider__track {
   position: relative;
-  height: 64px;
-  margin: 0 20px;
+  height: 48px;
+  margin: 0 15px;
   cursor: pointer;
   touch-action: none;
   outline: none;
@@ -250,14 +250,16 @@ hr {
 .mslider__thumb {
   position: absolute;
   top: 50%;
-  width: 40px;
-  height: 56px;
-  transform: translate(-50%, -50%) rotate(-4deg);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 3px solid var(--paper-2);
+  box-shadow: 0 0 0 2px var(--green), 0 3px 6px rgba(35, 63, 38, 0.3);
+  transform: translate(-50%, -50%);
   transition: left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s;
-  filter: drop-shadow(0 4px 5px rgba(35, 63, 38, 0.3));
 }
-.mslider__thumb svg { width: 100%; height: 100%; display: block; }
-.mslider__track:active .mslider__thumb { transform: translate(-50%, -50%) rotate(0deg) scale(1.12); transition: transform 0.2s; }
+.mslider__track:active .mslider__thumb { transform: translate(-50%, -50%) scale(1.15); transition: transform 0.2s; }
 .mslider__track:focus-visible .mslider__thumb { outline: 2px solid var(--gold); outline-offset: 4px; }
 .mslider--unset .mslider__thumb { opacity: 0.55; animation: nudge 1.8s ease-in-out infinite; }
 @keyframes nudge {
