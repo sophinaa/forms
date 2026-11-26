@@ -320,7 +320,8 @@ hr {
 .btn--primary:hover { background: var(--green-2); }
 .btn--ghost { background: transparent; color: var(--green); }
 .btn--ghost:hover { background: rgba(35, 63, 38, 0.08); }
-.btn--disabled { opacity: 0.4; }
+.btn--disabled, .btn:disabled { opacity: 0.4; }
+.form-error { color: #9a3b1f; font-weight: 700; margin: 0 0 14px; }
 .btn kbd { font-family: var(--body); font-size: 13px; opacity: 0.6; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 

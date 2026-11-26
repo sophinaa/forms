@@ -1,23 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import PrayerMat from './PrayerMat.jsx'
 
-const SESSIONS = [
-  { id: 'sisters', label: 'Sisters', time: '6–7 PM', start: '180000', end: '190000' },
-  { id: 'brothers', label: 'Brothers', time: '7–8 PM', start: '190000', end: '200000' },
-]
-
-const TOPICS = [
-  'Steps of wudu',
-  'What breaks wudu',
-  'Positions of salah',
-  'What to recite',
-  "Number of rak'ahs",
-  'Prayer times',
-  'Making up missed prayers',
-  'Praying at work / uni',
-]
-
-const LEVELS = ['Starting fresh', 'A little rusty', 'Getting there', 'Fairly confident', 'Just a refresher']
+import { SESSIONS, TOPICS, LEVELS, EMAIL_RE } from './shared.js'
 
 const initial = {
   name: '',
@@ -38,7 +22,7 @@ const STEPS = [
   { id: 'session', valid: (f) => !!f.session },
   { id: 'confidence', valid: (f) => f.wudu > 0 && f.salah > 0 },
   { id: 'topics', valid: () => true },
-  { id: 'contact', valid: (f) => /^\S+@\S+\.\S+$/.test(f.email) },
+  { id: 'contact', valid: (f) => EMAIL_RE.test(f.email.trim()) },
   { id: 'question', valid: () => true },
   { id: 'review' },
 ]
@@ -118,7 +102,19 @@ export default function App() {
   const [dir, setDir] = useState(1)
   const [submitted, setSubmitted] = useState(false)
   const [shake, setShake] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
   const firstInput = useRef(null)
+  const formTokenRef = useRef('')
+  const submissionId = useRef(crypto.randomUUID())
+
+  const fetchToken = async () => {
+    const res = await fetch('/api/form-token')
+    formTokenRef.current = (await res.json()).formToken
+  }
+  useEffect(() => {
+    fetchToken().catch(() => {})
+  }, [])
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
   const current = STEPS[step]
@@ -152,13 +148,36 @@ export default function App() {
   }
 
   const submit = async () => {
-    const payload = { ...form, submittedAt: new Date().toISOString() }
-    // TODO: send `payload` to your backend / Google Sheet / Formspree here.
-    const all = JSON.parse(localStorage.getItem('btb-submissions') || '[]')
-    localStorage.setItem('btb-submissions', JSON.stringify([...all, payload]))
-    localStorage.removeItem('btb-draft')
-    console.log('Registration:', payload)
-    setSubmitted(true)
+    if (sending) return
+    setSending(true)
+    setError('')
+    const send = () =>
+      fetch('/api/registrations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, formToken: formTokenRef.current, submissionId: submissionId.current, website: '' }),
+      })
+    try {
+      if (!formTokenRef.current) await fetchToken()
+      let res = await send()
+      let data = await res.json().catch(() => ({}))
+      if (res.status === 400 && data.code === 'invalid_form') {
+        // Token was rejected (e.g. server restarted): get a fresh one and retry once.
+        await fetchToken()
+        res = await send()
+        data = await res.json().catch(() => ({}))
+      }
+      if (res.ok || data.code === 'duplicate') {
+        localStorage.removeItem('btb-draft')
+        setSubmitted(true)
+      } else {
+        setError(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setError('We couldn’t reach the server. Check your connection and try again.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const onKeyDown = (e) => {
@@ -316,7 +335,7 @@ export default function App() {
             <label className="toggle">
               <input type="checkbox" checked={form.reminder} onChange={(e) => set('reminder', e.target.checked)} />
               <span className="toggle__track" />
-              Send me a reminder the day before
+              Happy for the organisers to send me a reminder the day before
             </label>
           </>
         )
@@ -366,8 +385,13 @@ export default function App() {
                 </div>
               ))}
             </dl>
-            <button ref={firstInput} className="btn btn--primary" onClick={submit}>
-              Reserve my spot
+            {error && (
+              <p className="form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button ref={firstInput} className="btn btn--primary" onClick={submit} disabled={sending}>
+              {sending ? 'Saving…' : 'Reserve my spot'}
             </button>
           </>
         )
@@ -411,6 +435,7 @@ export default function App() {
                   className="btn btn--ghost"
                   onClick={() => {
                     setForm(initial)
+                    submissionId.current = crypto.randomUUID()
                     setSubmitted(false)
                     setStep(0)
                   }}

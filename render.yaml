@@ -1,0 +1,31 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# In Render: New → Blueprint → pick this repo. You'll be asked for the values
+# marked `sync: false`.
+#
+# Free plan: the site sleeps after 15 minutes without visitors and takes about
+# a minute to wake. There's no persistent disk, so sign-ups go to Turso.
+services:
+  - type: web
+    name: back-to-basics
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: APP_SECRET
+        generateValue: true
+      # Your organiser password (12+ characters).
+      - key: ORGANISER_PASSWORD
+        sync: false
+      # From Turso (the Shared Light Café values work too).
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
