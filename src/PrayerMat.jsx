@@ -1,8 +1,11 @@
+import { useId } from 'react'
+
 // Prayer mat illustration whose mihrab arch "fills" as the form progresses.
 const ARCH =
   'M58,246 L58,128 C58,102 80,96 90,86 Q100,74 100,62 Q100,74 110,86 C120,96 142,102 142,128 L142,246 Z'
 
-export default function PrayerMat({ progress = 0, done = false }) {
+export default function PrayerMat({ progress = 0, done = false, className = '' }) {
+  const clipId = useId()
   const diamonds = []
   for (let i = 0; i < 9; i++) {
     const x = 34 + i * 16.5
@@ -23,13 +26,13 @@ export default function PrayerMat({ progress = 0, done = false }) {
 
   return (
     <svg
-      className={`mat ${done ? 'mat--done' : ''}`}
+      className={`mat ${done ? 'mat--done' : ''} ${className}`}
       viewBox="0 0 200 306"
       role="img"
       aria-label={`Prayer mat progress: ${Math.round(progress * 100)}%`}
     >
       <defs>
-        <clipPath id="arch-clip">
+        <clipPath id={clipId}>
           <path d={ARCH} />
         </clipPath>
       </defs>
@@ -40,7 +43,7 @@ export default function PrayerMat({ progress = 0, done = false }) {
       <g className="mat__diamonds">{diamonds}</g>
       <rect x="50" y="54" width="100" height="198" className="mat__line" />
       <path d={ARCH} className="mat__arch-bg" />
-      <g clipPath="url(#arch-clip)">
+      <g clipPath={`url(#${clipId})`}>
         <rect
           x="50"
           y="60"

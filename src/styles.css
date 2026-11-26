@@ -388,14 +388,115 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outl
 .footer__a { font-family: var(--cond); font-weight: 700; text-transform: uppercase; font-size: clamp(28px, 4vw, 44px); }
 .footer__b { font-family: var(--display); text-transform: uppercase; font-size: clamp(20px, 3.4vw, 40px); letter-spacing: 0.04em; }
 
-/* ---------- mobile ---------- */
-@media (max-width: 760px) {
-  .card { grid-template-columns: 1fr; grid-template-areas: 'mat' 'form' 'foot'; }
-  .mat-side { flex-direction: row; gap: 14px; justify-content: flex-start; margin-bottom: 18px; }
-  .mat { width: 70px; }
-  .mat-caption { margin: 0; }
-  .form-side { min-height: 0; }
+/* ---------- responsive ---------- */
+.welcome-row { display: block; }
+.mat--welcome { display: none; }
+.mat-caption__step { display: none; }
+.page { min-height: 100dvh; }
+
+/* tablet: keep two columns, tighten */
+@media (max-width: 900px) {
+  .card { grid-template-columns: 1.3fr 0.7fr; }
+  .form-side { min-height: 520px; }
   .sessions { grid-template-columns: 1fr; }
+}
+
+/* phone */
+@media (max-width: 640px) {
+  .page {
+    place-items: start center;
+    padding: max(14px, env(safe-area-inset-top)) 18px max(14px, env(safe-area-inset-bottom));
+  }
+  .card { grid-template-columns: 1fr; grid-template-areas: 'mat' 'form' 'foot'; }
+
+  /* poster layout on the welcome screen: details left, mat right */
+  .welcome-row {
+    display: grid;
+    grid-template-columns: 1fr 40%;
+    gap: 14px;
+    align-items: center;
+  }
+  .mat--welcome { display: block; transform: rotate(-2deg); }
+  .mat-side--welcome { display: none; }
+  .meta { flex-direction: column; gap: 4px; margin-bottom: 14px; font-size: 22px; }
+  .lede { font-size: 16px; margin: 0; }
+  hr { margin: 16px 0; }
+  .display { font-size: clamp(48px, 17vw, 80px); }
+  .condensed { font-size: 40px; }
+  .eyebrow { font-size: clamp(22px, 7vw, 30px); }
+
+  /* on the other screens the mat becomes a sticky progress header */
+  .mat-side {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    margin: 0 -18px 8px;
+    padding: 10px 18px;
+    background: var(--paper);
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .mat-side .mat { width: 56px; }
+  .mat-caption { margin: 0; font-size: 20px; color: var(--green); }
+  .mat-caption__step { display: inline; color: var(--gold); }
+  .progress { margin-bottom: 22px; }
+
+  .form-side { min-height: 0; padding-top: 4px; }
+  .step { padding-bottom: 8px; }
+  .q { font-size: clamp(26px, 8vw, 36px); }
+  .sub { font-size: 16px; }
+
+  /* Next / Back pinned to the bottom, within thumb reach */
+  .nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin: 24px -18px 0;
+    padding: 12px 18px max(12px, env(safe-area-inset-bottom));
+    background: var(--paper);
+    border-top: 1.5px solid var(--rule);
+  }
+  .nav .btn--primary { flex: 1; justify-content: center; margin-left: 12px; }
+  .btn kbd { display: none; }
+  .btn { padding: 15px 20px; min-height: 52px; }
+  .step > .btn--primary, .actions .btn { width: 100%; justify-content: center; }
+
+  .sessions { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .session { padding: 18px 14px 16px; }
+  .session__label { font-size: 30px; }
+  .session__time { font-size: 26px; }
+
+  .beads__row { justify-content: space-between; gap: 0; }
+  .bead { width: 44px; height: 44px; }
+
+  .chip { font-size: 15px; padding: 12px 14px; }
+
+  .review__row { grid-template-columns: 72px 1fr auto; gap: 8px; }
+  .review dt, .review dd { font-size: 16px; }
+  .link { padding: 8px 0 8px 8px; }
+
+  .ticket__v { font-size: 24px; }
+  .ticket > div { padding: 12px; }
+
+  .footer { margin-top: 20px; }
+  .footer__a { font-size: 30px; margin-right: 4px; }
+  .footer__b { font-size: clamp(16px, 5.4vw, 26px); }
+}
+
+/* very small phones */
+@media (max-width: 360px) {
+  .sessions { grid-template-columns: 1fr; }
+  .welcome-row { grid-template-columns: 1fr 36%; }
+  .meta { font-size: 19px; }
+  .bead { width: 38px; height: 38px; }
+}
+
+/* short landscape phones: don't waste height on the sticky header */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mat-side { position: static; }
+  .form-side { min-height: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -184,14 +184,19 @@ export default function App() {
             </h1>
             <p className="condensed">Workshop</p>
             <hr />
-            <p className="lede">
-              When was the last time you learned how to pray and perform wudu? Save your spot. It takes about a
-              minute.
-            </p>
-            <div className="meta">
-              <span>Wed 2nd December</span>
-              <span>Sisters 6–7 PM</span>
-              <span>Brothers 7–8 PM</span>
+            <div className="welcome-row">
+              <div>
+                <div className="meta">
+                  <span>Wed 2nd December</span>
+                  <span>Sisters 6–7 PM</span>
+                  <span>Brothers 7–8 PM</span>
+                </div>
+                <p className="lede">
+                  When was the last time you learned how to pray and perform wudu? Save your spot. It takes about a
+                  minute.
+                </p>
+              </div>
+              <PrayerMat progress={0} className="mat--welcome" />
             </div>
             <button ref={firstInput} className="btn btn--primary" onClick={next}>
               Bismillah, let’s begin →
@@ -450,9 +455,10 @@ export default function App() {
           )}
         </section>
 
-        <aside className="mat-side">
+        <aside className={`mat-side ${step === 0 && !submitted ? 'mat-side--welcome' : ''}`}>
           <PrayerMat progress={progress} done={submitted} />
           <p className="mat-caption">
+            {!submitted && step > 0 && <span className="mat-caption__step">Step {step} of {STEPS.length - 1} · </span>}
             {submitted ? 'Mat laid out. Your place is ready.' : step === 0 ? 'Your place is waiting' : `${Math.round(progress * 100)}% there`}
           </p>
         </aside>
